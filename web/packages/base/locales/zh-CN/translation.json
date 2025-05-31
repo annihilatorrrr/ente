@@ -40,11 +40,12 @@
     "referral_source_hint": "您是如何知道Ente的？ （可选的）",
     "referral_source_info": "我们不跟踪应用程序安装情况，如果您告诉我们您是在哪里找到我们的，将会有所帮助！",
     "password_mismatch_error": "两次输入的密码不一致",
+    "show_or_hide_password": "",
     "welcome_to_ente_title": "欢迎来到 <a/>",
     "welcome_to_ente_subtitle": "端到端加密的照片存储和共享",
     "new_album": "新建相册",
     "create_albums": "创建相册",
-    "enter_album_name": "相册名称",
+    "album_name": "相册名称",
     "close": "关闭",
     "yes": "是",
     "no": "否",
@@ -675,5 +676,11 @@
     "theme": "主题",
     "system": "系统",
     "light": "浅色",
-    "dark": "深色"
+    "dark": "深色",
+    "streamable_videos": "",
+    "processing_videos_status": "",
+    "share_favorites": "",
+    "person_favorites": "",
+    "shared_favorites": "",
+    "added_by_name": ""
 }
