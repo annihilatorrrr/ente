@@ -6,7 +6,9 @@ import Avatar from "components/pages/gallery/Avatar";
 import { assertionFailed } from "ente-base/assert";
 import { Overlay } from "ente-base/components/containers";
 import { isSameDay } from "ente-base/date";
+import { isDevBuild } from "ente-base/env";
 import { formattedDateRelative } from "ente-base/i18n-date";
+import log from "ente-base/log";
 import { downloadManager } from "ente-gallery/services/download";
 import { EnteFile, enteFileDeletionDate } from "ente-media/file";
 import { fileDurationString } from "ente-media/file-metadata";
@@ -24,7 +26,6 @@ import {
 } from "ente-new/photos/components/PlaceholderThumbnails";
 import { TileBottomTextOverlay } from "ente-new/photos/components/Tiles";
 import { TRASH_SECTION } from "ente-new/photos/services/collection";
-import { FlexWrapper } from "ente-shared/components/Container";
 import { t } from "i18next";
 import memoize from "memoize-one";
 import { GalleryContext } from "pages/gallery";
@@ -125,6 +126,16 @@ export interface FileListProps {
      */
     favoriteFileIDs?: Set<number>;
     /**
+     * An optional {@link TimeStampListItem} shown before all the items in the
+     * list. It is not sticky, and scrolls along with the content of the list.
+     */
+    header?: TimeStampListItem;
+    /**
+     * An optional {@link TimeStampListItem} shown after all the items in the
+     * list. It is not sticky, and scrolls along with the content of the list.
+     */
+    footer?: TimeStampListItem;
+    /**
      * Called when the user activates the thumbnail at the given {@link index}.
      *
      * This corresponding file would be at the corresponding index of
@@ -149,6 +160,8 @@ export const FileList: React.FC<FileListProps> = ({
     activeCollectionID,
     activePersonID,
     favoriteFileIDs,
+    header,
+    footer,
     onItemClick,
 }) => {
     const galleryContext = useContext(GalleryContext);
@@ -196,7 +209,9 @@ export const FileList: React.FC<FileListProps> = ({
             refreshInProgress.current = true;
             let timeStampList: TimeStampListItem[] = [];
 
-            if (galleryContext.photoListHeader) {
+            if (header) {
+                timeStampList.push(asFullSpanListItem(header));
+            } else if (galleryContext.photoListHeader) {
                 timeStampList.push(
                     getPhotoListHeader(galleryContext.photoListHeader),
                 );
@@ -220,7 +235,9 @@ export const FileList: React.FC<FileListProps> = ({
                 timeStampList.push(getEmptyListItem());
             }
             timeStampList.push(getVacuumItem(timeStampList));
-            if (publicCollectionGalleryContext.credentials) {
+            if (footer) {
+                timeStampList.push(asFullSpanListItem(footer));
+            } else if (publicCollectionGalleryContext.credentials) {
                 if (publicCollectionGalleryContext.photoListFooter) {
                     timeStampList.push(
                         getPhotoListFooter(
@@ -257,7 +274,11 @@ export const FileList: React.FC<FileListProps> = ({
             if (hasHeader) {
                 return timeStampList;
             }
-            if (galleryContext.photoListHeader) {
+            // TODO(RE): Remove after audit.
+            if (isDevBuild) throw new Error("Unexpected header change");
+            if (header) {
+                return [asFullSpanListItem(header), ...timeStampList];
+            } else if (galleryContext.photoListHeader) {
                 return [
                     getPhotoListHeader(galleryContext.photoListHeader),
                     ...timeStampList,
@@ -285,10 +306,27 @@ export const FileList: React.FC<FileListProps> = ({
                 timeStampList.length > 0 &&
                 timeStampList[timeStampList.length - 1]?.tag ==
                     "publicAlbumsFooter";
+
             if (hasFooter) {
                 return timeStampList;
             }
-            if (publicCollectionGalleryContext.credentials) {
+            // TODO(RE): Remove after audit.
+            if (
+                isDevBuild &&
+                (footer ||
+                    publicCollectionGalleryContext.credentials ||
+                    showAppDownloadBanner)
+            ) {
+                console.log({ timeStampList, footer, showAppDownloadBanner });
+                throw new Error("Unexpected footer change");
+            }
+            if (footer) {
+                return [
+                    ...timeStampList,
+                    asFullSpanListItem(footer),
+                    getAlbumsFooter(),
+                ];
+            } else if (publicCollectionGalleryContext.credentials) {
                 if (publicCollectionGalleryContext.photoListFooter) {
                     return [
                         ...timeStampList,
@@ -980,9 +1018,22 @@ const ListContainer = styled(Box, {
     }
 `;
 
-const ListItemContainer = styled(FlexWrapper)<{ span: number }>`
+const ListItemContainer = styled("div")<{ span: number }>`
     grid-column: span ${(props) => props.span};
+    display: flex;
+    align-items: center;
 `;
+
+const FullSpanListItemContainer = styled("div")`
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+`;
+
+const asFullSpanListItem = ({ item, ...rest }: TimeStampListItem) => ({
+    ...rest,
+    item: <FullSpanListItemContainer>{item}</FullSpanListItemContainer>,
+});
 
 const DateContainer = styled(ListItemContainer)(
     ({ theme }) => `
@@ -1142,7 +1193,10 @@ const FileThumbnail: React.FC<FileThumbnailProps> = ({
 
         void downloadManager
             .renderableThumbnailURL(file, showPlaceholder)
-            .then((url) => !didCancel && setImageURL(url));
+            .then((url) => !didCancel && setImageURL(url))
+            .catch((e: unknown) => {
+                log.warn("Failed to fetch thumbnail", e);
+            });
 
         return () => {
             didCancel = true;
@@ -1181,7 +1235,7 @@ const FileThumbnail: React.FC<FileThumbnailProps> = ({
             onClick={handleClick}
             onMouseEnter={handleHover}
             disabled={!imageURL}
-            {...(selectable ? longPressHandlers : {})}
+            {...(selectable && longPressHandlers)}
         >
             {selectable && (
                 <Check

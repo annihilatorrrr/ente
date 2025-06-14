@@ -16,7 +16,6 @@ import {
 import { EnteLogo, EnteLogoBox } from "ente-base/components/EnteLogo";
 import type { ButtonishProps } from "ente-base/components/mui";
 import { useIsSmallWidth } from "ente-base/components/utils/hooks";
-import { pt } from "ente-base/i18n";
 import {
     hlsGenerationStatusSnapshot,
     isHLSGenerationSupported,
@@ -390,7 +389,7 @@ const shouldShowEmptyState = (inputValue: string) => {
     // Don't show empty state if there is no ML related information AND we're
     // not processing videos.
 
-    if (!isMLSupported && !isHLSGenerationSupported()) {
+    if (!isMLSupported && !isHLSGenerationSupported) {
         // Neither of ML or HLS generation is supported on current client. This
         // is the code path for web.
         return false;
@@ -430,8 +429,7 @@ const EmptyState: React.FC<
         case "done":
             // If ML is not running, see if video processing is.
             if (vpStatus?.enabled && vpStatus.status == "processing") {
-                // TODO(HLS):
-                label = pt("Processing videos...");
+                label = t("processing_videos_status");
             }
             break;
         case "scheduled":
