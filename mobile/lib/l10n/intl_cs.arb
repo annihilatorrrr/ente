@@ -437,7 +437,5 @@
   "newRange": "Nový rozsah",
   "youAndThem": "Vy a {name}",
   "selfiesWithThem": "Selfie s {name}",
-  "cLIcon": "Nová ikona",
-  "cLMemories": "Vzpomínky",
-  "cLWidgets": "Widgety"
+  "wishThemAHappyBirthday": "Wish ${name} a happy birthday! 🎉"
 }

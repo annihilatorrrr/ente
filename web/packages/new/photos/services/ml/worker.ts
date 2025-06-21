@@ -1,5 +1,5 @@
 import { expose, wrap } from "comlink";
-import { clientPackageName } from "ente-base/app";
+import { clientIdentifier } from "ente-base/app";
 import { assertionFailed } from "ente-base/assert";
 import { isHTTP4xxError, isHTTPErrorWithStatus } from "ente-base/http";
 import log from "ente-base/log";
@@ -317,10 +317,10 @@ export class MLWorker {
      * after we have fetched the latest cgroups from remote (so that we do no
      * overwrite any remote updates).
      *
-     * @param masterKey The user's master key, required for updating remote
-     * cgroups if needed.
+     * @param masterKey The user's master key (as a base64 string), required for
+     * updating remote cgroups if needed.
      */
-    async clusterFaces(masterKey: Uint8Array) {
+    async clusterFaces(masterKey: string) {
         const { clusters, modifiedClusterIDs } = await _clusterFaces(
             await savedFaceIndexes(),
             await getAllLocalFiles(),
@@ -590,13 +590,13 @@ const index = async (
 
         const remoteFaceIndex = existingRemoteFaceIndex ?? {
             version: faceIndexingVersion,
-            client: clientPackageName,
+            client: clientIdentifier,
             ...faceIndex,
         };
 
         const remoteCLIPIndex = existingRemoteCLIPIndex ?? {
             version: clipIndexingVersion,
-            client: clientPackageName,
+            client: clientIdentifier,
             ...clipIndex,
         };
 
