@@ -197,7 +197,7 @@ Future<void> deleteFilesFromRemoteOnly(
   RemoteSyncService.instance.sync(silently: true);
 }
 
-Future<void> deleteFilesOnDeviceOnly(
+Future<List<EnteFile>> deleteFilesOnDeviceOnly(
   BuildContext context,
   List<EnteFile> files,
 ) async {
@@ -226,7 +226,7 @@ Future<void> deleteFilesOnDeviceOnly(
   if (hasLocalOnlyFiles && Platform.isAndroid && !isLocalGalleryMode) {
     final shouldProceed = await shouldProceedWithDeletion(context);
     if (!shouldProceed) {
-      return;
+      return const [];
     }
   }
   Set<String> deletedIDs = <String>{};
@@ -262,6 +262,7 @@ Future<void> deleteFilesOnDeviceOnly(
       ),
     );
   }
+  return deletedFiles;
 }
 
 Future<bool> deleteFromTrash(BuildContext context, List<EnteFile> files) async {
