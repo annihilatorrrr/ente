@@ -389,6 +389,7 @@ export const Upload: React.FC<UploadProps> = ({
     }, []);
 
     const handleInputCancel = useCallback(() => {
+        selectedUploadType.current = undefined;
         setIsInputPending(false);
     }, []);
 
