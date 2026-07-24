@@ -192,7 +192,7 @@ export function UploadProgressDetails() {
                         />
                     )}
                 </Box>
-                {hasLivePhotos && (
+                {uploadPhase == "uploading" && hasLivePhotos && (
                     <Typography sx={livePhotosTextSx}>
                         {t("live_photos_detected")}
                     </Typography>

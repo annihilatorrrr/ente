@@ -151,7 +151,9 @@ function UploadProgressV2Summary() {
                             )}
                             {isDeterminate && (
                                 <Typography sx={mutedCaptionSx}>
-                                    {t("percent_complete", { percent: 100 })}
+                                    {t("percent_complete", {
+                                        percent: progress,
+                                    })}
                                 </Typography>
                             )}
                         </Stack>

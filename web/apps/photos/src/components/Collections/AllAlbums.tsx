@@ -40,6 +40,7 @@ import type {
     CollectionSummary,
 } from "ente-new/photos/services/collection-summary";
 import { usePhotosAppContext } from "ente-new/photos/types/context";
+import { enableV2 } from "ente-new/photos/utils/feature-flags";
 import { t } from "i18next";
 import memoize from "memoize-one";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -61,8 +62,6 @@ interface AllAlbums {
     canCreateAlbum: boolean;
     onRemotePull: () => Promise<void>;
 }
-
-const enableV2 = true as boolean;
 
 /**
  * A modal showing the list of all the albums.

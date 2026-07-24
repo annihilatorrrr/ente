@@ -103,6 +103,7 @@ import {
 } from "ente-new/photos/services/collection";
 import { redirectToCustomerPortal } from "ente-new/photos/services/user-details";
 import { usePhotosAppContext } from "ente-new/photos/types/context";
+import { enableV2 } from "ente-new/photos/utils/feature-flags";
 import { firstNonEmpty } from "ente-utils/array";
 import { t } from "i18next";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -170,8 +171,6 @@ interface UploadProps {
 }
 
 type UploadType = "files" | "folders" | "zips";
-
-const enableV2 = true as boolean;
 
 interface UploadFilesOptions {
     persistPendingUploads?: boolean;

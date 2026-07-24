@@ -130,6 +130,7 @@ import {
     addManualFileAssignmentsToPerson,
     isMLEnabled,
 } from "ente-new/photos/services/ml";
+import { enableV2 } from "ente-new/photos/utils/feature-flags";
 
 import { uploadManager } from "@/services/upload-manager";
 import watcher from "@/services/watch";
@@ -188,8 +189,6 @@ import { Trans } from "react-i18next";
  *     ---------------------      |
  *           Photo List           v
  */
-const enableV2 = true as boolean;
-
 const Page: React.FC = () => {
     const { logout, showMiniDialog, onGenericError } = useBaseContext();
     const {

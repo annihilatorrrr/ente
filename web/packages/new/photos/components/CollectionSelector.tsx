@@ -35,6 +35,7 @@ import {
     type CollectionSummaries,
     type CollectionSummary,
 } from "ente-new/photos/services/collection-summary";
+import { enableV2 } from "ente-new/photos/utils/feature-flags";
 import { includes } from "ente-utils/type-guards";
 import { t } from "i18next";
 import React, {
@@ -45,8 +46,6 @@ import React, {
     useState,
 } from "react";
 import { CollectionSelectorV2 } from "./CollectionSelectorV2";
-
-const enableV2 = true as boolean;
 
 export type CollectionSelectorAction =
     | "upload"
@@ -142,8 +141,8 @@ export type CollectionSelectorProps = ModalVisibilityProps & {
  * A dialog allowing the user to select one of their existing collections or
  * create a new one.
  *
- * For internal users this renders the restyled {@link CollectionSelectorV2}
- * variant; everyone else continues to get the classic implementation below.
+ * The shared Photos UI flag chooses the restyled
+ * {@link CollectionSelectorV2} variant or the classic implementation below.
  * Both share the exact same props and behaviour.
  */
 export const CollectionSelector: React.FC<CollectionSelectorProps> = (
