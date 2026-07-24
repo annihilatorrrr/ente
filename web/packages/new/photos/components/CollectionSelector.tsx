@@ -26,7 +26,6 @@ import {
     LargeTileCreateNewButton,
     LargeTileTextOverlay,
 } from "ente-new/photos/components/Tiles";
-import { useSettingsSnapshot } from "ente-new/photos/components/utils/use-snapshot";
 import {
     canAddToCollection,
     canMoveToCollection,
@@ -46,6 +45,8 @@ import React, {
     useState,
 } from "react";
 import { CollectionSelectorV2 } from "./CollectionSelectorV2";
+
+const enableV2 = true as boolean;
 
 export type CollectionSelectorAction =
     | "upload"
@@ -148,8 +149,7 @@ export type CollectionSelectorProps = ModalVisibilityProps & {
 export const CollectionSelector: React.FC<CollectionSelectorProps> = (
     props,
 ) => {
-    const { isInternalUser } = useSettingsSnapshot();
-    return isInternalUser ? (
+    return enableV2 ? (
         <CollectionSelectorV2 {...props} />
     ) : (
         <CollectionSelectorClassic {...props} />

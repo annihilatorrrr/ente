@@ -188,6 +188,8 @@ import { Trans } from "react-i18next";
  *     ---------------------      |
  *           Photo List           v
  */
+const enableV2 = true as boolean;
+
 const Page: React.FC = () => {
     const { logout, showMiniDialog, onGenericError } = useBaseContext();
     const {
@@ -261,7 +263,7 @@ const Page: React.FC = () => {
     const [collectionSelectorAttributes, setCollectionSelectorAttributes] =
         useState<CollectionSelectorAttributes | undefined>();
 
-    const { customDomain, isInternalUser } = useSettingsSnapshot();
+    const { customDomain } = useSettingsSnapshot();
     const userDetails = useUserDetailsSnapshot();
     const peopleState = usePeopleStateSnapshot();
 
@@ -2217,7 +2219,7 @@ const Page: React.FC = () => {
             !isFirstLoad &&
             !state.collectionFiles.length &&
             activeCollectionID === PseudoCollectionID.all ? (
-                isInternalUser ? (
+                enableV2 ? (
                     <GalleryEmptyStateV2
                         isUploadInProgress={uploadManager.isUploadInProgress()}
                         onUpload={openUploader}
@@ -2316,7 +2318,7 @@ const Page: React.FC = () => {
             />
             <SingleInputDialog
                 {...albumNameInputVisibilityProps}
-                variant={isInternalUser ? "v2" : "default"}
+                variant={enableV2 ? "v2" : "default"}
                 title={t("new_album")}
                 label={t("album_name")}
                 submitButtonTitle={t("create")}

@@ -31,7 +31,6 @@ import {
     LargeTileCreateNewButton,
     LargeTileTextOverlay,
 } from "ente-new/photos/components/Tiles";
-import { useSettingsSnapshot } from "ente-new/photos/components/utils/use-snapshot";
 import {
     createAlbum,
     createHiddenAlbum,
@@ -63,6 +62,8 @@ interface AllAlbums {
     onRemotePull: () => Promise<void>;
 }
 
+const enableV2 = true as boolean;
+
 /**
  * A modal showing the list of all the albums.
  */
@@ -80,7 +81,6 @@ export const AllAlbums: React.FC<AllAlbums> = ({
     const fullScreen = useMediaQuery("(max-width: 428px)");
     const [searchTerm, setSearchTerm] = useState("");
     const { showNotification } = usePhotosAppContext();
-    const { isInternalUser } = useSettingsSnapshot();
     const { show: showAlbumNameInput, props: albumNameInputVisibilityProps } =
         useModalVisibility();
     const [albumCreatedToast, setAlbumCreatedToast] = useState<{
@@ -174,7 +174,7 @@ export const AllAlbums: React.FC<AllAlbums> = ({
             </AllAlbumsDialog>
             <SingleInputDialog
                 {...albumNameInputVisibilityProps}
-                variant={isInternalUser ? "v2" : "default"}
+                variant={enableV2 ? "v2" : "default"}
                 title={t("new_album")}
                 label={t("album_name")}
                 submitButtonTitle={t("create")}
